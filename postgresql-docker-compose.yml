@@ -5,6 +5,7 @@ services:
         container_name: nopcommerce
         ports:
             - "80:80"
+        restart: "always"
         depends_on:
             - nopcommerce_database
     nopcommerce_database:
@@ -12,7 +13,21 @@ services:
         container_name: nopcommerce_postgres_server
         restart: "always"
         environment:
-          POSTGRES_PASSWORD: "nopCommerce_db_password"
+            POSTGRES_USER: "admin"
+            POSTGRES_PASSWORD: "dbAdmin_password"
+        volumes:
+            - nopcommerce_data:/var/lib/postgresql/data
+    nopcommerce_dbAdmin:
+        image: "dpage/pgadmin4:latest"
+        container_name: nopcommerce_pgAdmin
+        ports:
+            - "8001:8001"
+        depends_on:
+            - nopcommerce_database
+        environment:
+            PGADMIN_DEFAULT_EMAIL: "admin@yourStore.com"
+            PGADMIN_DEFAULT_PASSWORD: "pgAdmin_password"
+            PGADMIN_LISTEN_PORT: 8001
 
 volumes:
-  nopcommerce_data:            
+    nopcommerce_data:
